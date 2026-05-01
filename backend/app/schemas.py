@@ -67,3 +67,51 @@ class TelecomSector(BaseModel):
 class TelecomSectorsResponse(BaseModel):
     sectors: List[TelecomSector]
     integration_status: str
+
+
+class TelecomSectorTelemetry(BaseModel):
+    sector_id: str
+    name: Optional[str] = None
+    capacity_used_pct: float
+    ci_db: float
+    calibration: Optional[float] = None
+    updated_at: Optional[float] = None
+
+
+class TelecomIngestRequest(BaseModel):
+    timestamp: Optional[float] = None
+    sectors: List[TelecomSectorTelemetry] = Field(..., min_length=1)
+
+
+class BillboardSectorMapping(BaseModel):
+    billboard_id: str
+    sector_id: str
+    weight: float = 1.0
+
+
+class BillboardMappingUpsertRequest(BaseModel):
+    mappings: List[BillboardSectorMapping] = Field(..., min_length=1)
+
+
+class TelecomMacroSector(BaseModel):
+    sector_id: str
+    name: Optional[str] = None
+    capacity_used_pct: float
+    ci_db: float
+    density: float
+    calibrated_density: float
+    calibration: float
+    updated_at: float
+
+
+class TelecomMacroResponse(BaseModel):
+    integration_status: str
+    updated_at: float
+    sectors: List[TelecomMacroSector]
+
+
+class BillboardMacroDensity(BaseModel):
+    billboard_id: str
+    density: float
+    updated_at: float
+    sectors: List[TelecomMacroSector]

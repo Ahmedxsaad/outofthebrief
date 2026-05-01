@@ -1,0 +1,289 @@
+/* NEXUS DASHBOARD — Full app layout */
+
+/* ── PAGE BASE ── */
+.dash-page {
+  background: #08080B;
+  color: #e0e0e8;
+  min-height: 100vh;
+  font-family: var(--font-body);
+}
+.dash-page body { background: #08080B; cursor: auto; }
+
+/* ── LAYOUT ── */
+.dash-app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: var(--nav-h) 1fr;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.dash-sidebar {
+  grid-row: 1 / -1;
+  background: #0C0C10;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.dash-sidebar-brand {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; gap: 10px;
+}
+.dash-sidebar-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--c-violet), var(--c-violet-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: #fff;
+}
+.dash-sidebar-name {
+  font-size: 14px; font-weight: 500; letter-spacing: 2px;
+  text-transform: uppercase; color: #e0e0e8;
+}
+.dash-sidebar-nav {
+  padding: 16px 12px;
+  flex: 1;
+}
+.dash-sidebar-section {
+  margin-bottom: 24px;
+}
+.dash-sidebar-label {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: #333; padding: 0 12px; margin-bottom: 8px;
+}
+.dash-nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  font-size: 13px; color: #666;
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: none; width: 100%;
+  text-align: left; font-family: var(--font-body);
+}
+.dash-nav-item:hover { background: rgba(255,255,255,0.03); color: #aaa; }
+.dash-nav-item.active {
+  background: rgba(var(--c-violet-rgb), 0.1);
+  color: var(--c-violet);
+}
+.dash-nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.dash-nav-item .nav-badge {
+  margin-left: auto; font-size: 9px;
+  background: rgba(var(--c-violet-rgb), 0.15);
+  color: var(--c-violet); padding: 2px 8px;
+  border-radius: 100px;
+}
+
+/* ── MAIN CONTENT ── */
+.dash-main {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 24px;
+  overflow-y: auto;
+  background: #08080B;
+}
+
+/* ── TOP BAR ── */
+.dash-topbar {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  background: #0C0C10;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.dash-topbar-left {
+  display: flex; align-items: center; gap: 16px;
+}
+.dash-topbar-campaign {
+  font-size: 14px; font-weight: 500; color: #e0e0e8;
+}
+.dash-topbar-right {
+  display: flex; align-items: center; gap: 12px;
+}
+.dash-topbar-live {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(var(--c-violet-rgb), 0.1);
+  border: 1px solid rgba(var(--c-violet-rgb), 0.2);
+  border-radius: 100px; padding: 5px 14px;
+  font-size: 10px; color: var(--c-violet);
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+.dash-topbar-live .live-dot { width: 5px; height: 5px; }
+
+/* ── METRIC CARDS ROW ── */
+.dash-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.dash-metric-card {
+  background: #0E0E12;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.dash-metric-card:hover { border-color: rgba(var(--c-violet-rgb), 0.2); }
+.dash-metric-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c-violet), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.dash-metric-card:hover::before { opacity: 1; }
+.dash-metric-label {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #444; margin-bottom: 8px;
+}
+.dash-metric-value {
+  font-size: 28px; font-weight: 600; letter-spacing: -1px;
+  color: #f0f0f8; line-height: 1;
+}
+.dash-metric-delta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; margin-top: 8px; font-weight: 500;
+}
+.dash-metric-delta.up { color: var(--c-green); }
+.dash-metric-delta.down { color: var(--c-red); }
+.dash-metric-spark {
+  position: absolute; bottom: 0; right: 0;
+  width: 100px; height: 40px; opacity: 0.3;
+}
+
+/* ── PANELS ── */
+.dash-panels {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.dash-panel {
+  background: #0E0E12;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dash-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.dash-panel-title {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: #555;
+}
+.dash-panel-body {
+  padding: 0;
+  position: relative;
+}
+
+/* ── MAP PANEL ── */
+.dash-map-panel {
+  height: 340px;
+  position: relative;
+}
+.dash-map-overlay {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+}
+.dash-map-city {
+  position: absolute;
+  background: rgba(10,10,14,0.9);
+  border: 1px solid rgba(var(--c-violet-rgb), 0.3);
+  border-radius: 6px; padding: 6px 10px;
+  font-size: 10px; color: rgba(var(--c-violet-rgb), 0.9);
+  letter-spacing: 0.5px; white-space: nowrap;
+}
+.dash-map-city .city-count {
+  font-size: 8px; color: #555; display: block; margin-top: 2px;
+}
+
+/* ── EVENTS FEED ── */
+.dash-events {
+  max-height: 340px;
+  overflow-y: auto;
+}
+.dash-event-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  transition: background 0.2s;
+}
+.dash-event-item:hover { background: rgba(255,255,255,0.02); }
+.dash-event-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.dash-event-content { flex: 1; }
+.dash-event-title { font-size: 12px; color: #bbb; }
+.dash-event-meta { font-size: 10px; color: #3a3a44; margin-top: 2px; }
+.dash-event-value {
+  font-size: 12px; font-weight: 600; color: #e0e0e8;
+  white-space: nowrap;
+}
+
+/* ── BOTTOM PANELS ── */
+.dash-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.dash-chart-area {
+  height: 200px;
+  padding: 16px;
+}
+.dash-donut-area {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* ── ATTRIBUTION FUNNEL ── */
+.dash-funnel {
+  padding: 20px;
+}
+.dash-funnel-step {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0;
+  position: relative;
+}
+.dash-funnel-step::before {
+  content: '';
+  position: absolute; left: 15px; top: 36px; bottom: -10px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(var(--c-violet-rgb), 0.3), transparent);
+}
+.dash-funnel-step:last-child::before { display: none; }
+.dash-funnel-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0; z-index: 1;
+  background: rgba(var(--c-violet-rgb), 0.1);
+  border: 1px solid rgba(var(--c-violet-rgb), 0.2);
+}
+.dash-funnel-label { font-size: 12px; color: #888; }
+.dash-funnel-value { font-size: 11px; color: var(--c-violet); font-weight: 500; }
+
+/* ── TELECOM SIM CARD ── */
+.dash-telecom-panel { padding: 16px 20px; }
+.telecom-sector {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.telecom-sector-name { font-size: 11px; color: #888; }
+.telecom-sector-bar {
+  width: 100px; height: 4px; background: rgba(255,255,255,0.05);
+  border-radius: 2px; overflow: hidden;
+}
+.telecom-sector-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--c-violet), var(--c-violet-light));
+  transition: width 0.6s var(--ease-out);
+}
+.telecom-sector-pct { font-size: 10px; color: #555; width: 36px; text-align: right; }

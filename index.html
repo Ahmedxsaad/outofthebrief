@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Measure the Unmeasurable</title>
+<meta name="description" content="Nexus bridges physical advertising and digital attribution. Real-time measurement for OOH, TV, and Radio across Tunisia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Noto+Sans+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/hero.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── NAV ───────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-wordmark">Nexus</div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a class="nav-link active" href="index.html">Home</a>
+      <a class="nav-link" href="dashboard.html">Dashboard</a>
+      <a class="nav-link" href="demo.html">Live Demo</a>
+    </div>
+    <div class="lang-pill">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" onclick="setLang('ar')">AR</button>
+    </div>
+    <button class="nav-cta" data-copy="nav_demo">Book a Demo</button>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────── -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+
+  <div class="hero-inner">
+  <!-- LEFT: copy -->
+  <div class="hero-left">
+    <div class="hero-eyebrow sr">
+      <div class="hero-eyebrow-dot"></div>
+      <span data-copy="hero_eyebrow">Media Attribution Intelligence</span>
+    </div>
+    <div class="hero-headline">
+      <span class="line sr d1"><span class="word-wrap hl-solid" data-copy="hero_h1_1">Measure</span></span>
+      <span class="line sr d2"><span class="word-wrap hl-violet-italic" data-copy="hero_h1_2">every</span></span>
+      <span class="line sr d3"><span class="word-wrap hl-ghost" data-copy="hero_h1_3">impression.</span></span>
+      <span class="line sr d4"><span class="word-wrap hl-solid" data-copy="hero_h1_4">In real</span> <span class="word-wrap hl-violet-italic" data-copy="hero_h1_5">time.</span></span>
+    </div>
+    <p class="hero-sub sr d4" data-copy="hero_sub">Nexus bridges physical advertising and digital attribution using edge AI and mobile network logic. Real-time ROI for OOH, TV, and Radio.</p>
+    <div class="hero-ctas sr d5">
+      <button class="btn-hero-primary" data-copy="cta_demo">Book a Demo</button>
+      <button class="btn-hero-ghost" data-copy="cta_app">Download App</button>
+    </div>
+    <div class="hero-microstats sr d5">
+      <div class="hero-microstat">
+        <div class="hero-microstat-val">1.2M+</div>
+        <div class="hero-microstat-lbl">Daily Impressions</div>
+      </div>
+      <div class="hero-microstat">
+        <div class="hero-microstat-val">99.2%</div>
+        <div class="hero-microstat-lbl">Accuracy</div>
+      </div>
+      <div class="hero-microstat">
+        <div class="hero-microstat-val">2s</div>
+        <div class="hero-microstat-lbl">Audio Hash</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: live data card -->
+  <div class="hero-right sr d3">
+    <div class="hero-data-card">
+
+      <!-- Title bar -->
+      <div class="dc-titlebar">
+        <div class="dc-dots">
+          <div class="dc-dot" style="background:#ff5f57"></div>
+          <div class="dc-dot" style="background:#ffbd2e"></div>
+          <div class="dc-dot" style="background:#28c840"></div>
+        </div>
+        <div class="dc-title">nexus.io / intelligence</div>
+        <div class="dc-live">
+          <div class="dc-live-dot"></div>
+          <span class="dc-live-txt">Live</span>
+        </div>
+      </div>
+
+      <!-- Campaign header -->
+      <div class="dc-campaign">
+        <div>
+          <div class="dc-campaign-name">Ramadan Campaign 2026 — Tunis Metro</div>
+          <div class="dc-campaign-sub">OOH + TV + Radio · 12 active placements</div>
+        </div>
+        <div class="dc-status">
+          <div class="dc-status-dot"></div>
+          Active
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="dc-stats">
+        <div class="dc-stat">
+          <div class="dc-stat-delta up">↑ 12%</div>
+          <div class="dc-stat-val" id="hero-counter">1,247,893</div>
+          <div class="dc-stat-lbl">Impressions</div>
+        </div>
+        <div class="dc-stat">
+          <div class="dc-stat-delta up">↑ 8%</div>
+          <div class="dc-stat-val">340,219</div>
+          <div class="dc-stat-lbl">Tune-ins</div>
+        </div>
+        <div class="dc-stat">
+          <div class="dc-stat-delta neutral">+2.1k</div>
+          <div class="dc-stat-val">128,441</div>
+          <div class="dc-stat-lbl">Profiles</div>
+        </div>
+        <div class="dc-stat">
+          <div class="dc-stat-val">94.7%</div>
+          <div class="dc-stat-lbl">Match Rate</div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="dc-map">
+        <canvas id="hero-map-canvas" style="width:100%;height:100%;display:block"></canvas>
+        <div class="dc-map-labels">
+          <div class="dc-map-label" style="top:22%;left:34%">Centre Ville</div>
+          <div class="dc-map-label" style="top:14%;right:22%">La Marsa</div>
+          <div class="dc-map-label" style="bottom:28%;left:16%">Ariana</div>
+          <div class="dc-map-label" style="bottom:20%;right:18%">Menzah</div>
+        </div>
+        <div class="dc-map-scan"></div>
+      </div>
+
+      <!-- Live event feed -->
+      <div class="dc-feed">
+        <div class="dc-feed-header">
+          <span class="dc-feed-title">Live Attribution Feed</span>
+          <span class="dc-feed-count" id="feed-count">4,521,882 events</span>
+        </div>
+        <div class="dc-feed-items" id="feed-items">
+          <div class="dc-feed-item">
+            <div class="dc-feed-icon" style="background:rgba(107,43,255,0.15)">🏙️</div>
+            <div class="dc-feed-text">
+              <div class="dc-feed-event">OOH impression · Avenue Bourguiba</div>
+              <div class="dc-feed-time">just now · profile #A-8841</div>
+            </div>
+            <div class="dc-feed-val">+1</div>
+          </div>
+          <div class="dc-feed-item">
+            <div class="dc-feed-icon" style="background:rgba(34,197,94,0.1)">📺</div>
+            <div class="dc-feed-text">
+              <div class="dc-feed-event">Audio matched · Tunisie Telecom ad</div>
+              <div class="dc-feed-time">2s ago · profile #B-2291</div>
+            </div>
+            <div class="dc-feed-val">+1</div>
+          </div>
+          <div class="dc-feed-item">
+            <div class="dc-feed-icon" style="background:rgba(251,191,36,0.1)">📻</div>
+            <div class="dc-feed-text">
+              <div class="dc-feed-event">Audio fingerprint · Mosaique FM</div>
+              <div class="dc-feed-time">5s ago · profile #C-5510</div>
+            </div>
+            <div class="dc-feed-val">+1</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ── MARQUEE ─────────────────────────────────────────────── -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item">OOH Impressions <span id="m-impressions">1,247,893</span></div>
+    <div class="marquee-item">TV Tune-ins <span>340,219</span></div>
+    <div class="marquee-item">Radio Listeners <span>89,441</span></div>
+    <div class="marquee-item">Active Campaigns <span>12</span></div>
+    <div class="marquee-item">Attribution Events <span>4,521,882</span></div>
+    <div class="marquee-item">Edge AI Nodes <span>147</span></div>
+    <div class="marquee-item">Network Coverage <span>Tunis Metro</span></div>
+    <div class="marquee-item">Detection Accuracy <span>99.2%</span></div>
+    <!-- duplicate -->
+    <div class="marquee-item">OOH Impressions <span>1,247,893</span></div>
+    <div class="marquee-item">TV Tune-ins <span>340,219</span></div>
+    <div class="marquee-item">Radio Listeners <span>89,441</span></div>
+    <div class="marquee-item">Active Campaigns <span>12</span></div>
+    <div class="marquee-item">Attribution Events <span>4,521,882</span></div>
+    <div class="marquee-item">Edge AI Nodes <span>147</span></div>
+    <div class="marquee-item">Network Coverage <span>Tunis Metro</span></div>
+    <div class="marquee-item">Detection Accuracy <span>99.2%</span></div>
+  </div>
+</div>
+
+<!-- ── PROBLEM / SOLUTION ─────────────────────────────────── -->
+<section id="problem" class="s">
+  <div class="eyebrow sr" data-copy="problem_eyebrow">The Shift</div>
+  <div class="problem-grid sr d1">
+    <div class="problem-half old">
+      <div class="problem-half-label" data-copy="problem_old_label">Before Nexus</div>
+      <div class="problem-title" data-copy="problem_old_title">Guesswork dressed as data.</div>
+      <div class="problem-item old-item"><span class="problem-item-marker">—</span><span data-copy="prob_old_1">Declarative panel studies</span></div>
+      <div class="problem-item old-item"><span class="problem-item-marker">—</span><span data-copy="prob_old_2">Delayed weekly reporting</span></div>
+      <div class="problem-item old-item"><span class="problem-item-marker">—</span><span data-copy="prob_old_3">Estimated audience sizes</span></div>
+      <div class="problem-item old-item"><span class="problem-item-marker">—</span><span data-copy="prob_old_4">Zero cross-channel attribution</span></div>
+    </div>
+    <div class="problem-half new">
+      <div class="problem-half-label" data-copy="problem_new_label">With Nexus</div>
+      <div class="problem-title" data-copy="problem_new_title">Deterministic truth, instantly.</div>
+      <div class="problem-item"><span class="problem-item-marker">◆</span><span data-copy="prob_new_1">Deterministic real data</span></div>
+      <div class="problem-item"><span class="problem-item-marker">◆</span><span data-copy="prob_new_2">Real-time dashboards</span></div>
+      <div class="problem-item"><span class="problem-item-marker">◆</span><span data-copy="prob_new_3">Precise demographic profiling</span></div>
+      <div class="problem-item"><span class="problem-item-marker">◆</span><span data-copy="prob_new_4">Multi-touch attribution</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PILLARS ─────────────────────────────────────────────── -->
+<section id="pillars" class="s" style="padding-top:0">
+  <div class="eyebrow sr" data-copy="pillars_eyebrow">Core Technology</div>
+  <div class="pillars-row sr d1">
+    <div class="pillar">
+      <div class="pillar-num">01</div>
+      <div class="pillar-tag">OOH + Telecom</div>
+      <div class="pillar-title" data-copy="pillar1_title">Vision & Telecom Mapping</div>
+      <div class="pillar-body" data-copy="pillar1_body">Edge AI sensors combined with macro-level cellular network schemas to map precise street-level audiences across Tunis.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02</div>
+      <div class="pillar-tag">Audio Intelligence</div>
+      <div class="pillar-title" data-copy="pillar2_title">Acoustic Fingerprinting</div>
+      <div class="pillar-body" data-copy="pillar2_body">Proprietary 2-second audio hash captures TV and Radio tune-ins without ever recording or storing audio — privacy first.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03</div>
+      <div class="pillar-tag">Audience Profiles</div>
+      <div class="pillar-title" data-copy="pillar3_title">Progressive Profiling</div>
+      <div class="pillar-body" data-copy="pillar3_body">Turn anonymous impressions into actionable demographic profiles through ethical, consent-driven mobile engagement.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── NUMBERS ─────────────────────────────────────────────── -->
+<section id="numbers">
+  <div class="numbers-grid">
+    <div class="number-item sr"><div class="number-val">1.2M+</div><div class="number-lbl">Daily Impressions</div></div>
+    <div class="number-item sr d1"><div class="number-val">99.2%</div><div class="number-lbl">Detection Accuracy</div></div>
+    <div class="number-item sr d2"><div class="number-val">2s</div><div class="number-lbl">Audio Fingerprint</div></div>
+    <div class="number-item sr d3"><div class="number-val">&lt;5ms</div><div class="number-lbl">Attribution Latency</div></div>
+  </div>
+</section>
+
+<!-- ── DASHBOARD ───────────────────────────────────────────── -->
+<section id="dashboard" class="s">
+  <div class="dash-layout">
+    <div>
+      <div class="eyebrow" style="color:#444" data-copy="dash_eyebrow">Live Intelligence</div>
+      <div class="dash-title sr">
+        Your campaign,<br><em data-copy="dash_title_em">alive.</em>
+      </div>
+      <p class="dash-body sr d1" data-copy="dash_body">Watch impressions, tune-ins, and attribution events unfold across the Tunis metro area — as they happen. No sampling. No delay.</p>
+      <div style="display:flex;flex-direction:column;gap:14px" class="sr d2">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(107,43,255,0.15);border:1px solid rgba(107,43,255,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">◉</div>
+          <span style="font-size:13px;font-weight:300;color:#888" data-copy="dash_feat1">Live OOH, TV, and Radio attribution in one view</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(107,43,255,0.15);border:1px solid rgba(107,43,255,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">◈</div>
+          <span style="font-size:13px;font-weight:300;color:#888" data-copy="dash_feat2">Satellite-style audience heat maps of Tunis</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:32px;height:32px;border-radius:8px;background:rgba(107,43,255,0.15);border:1px solid rgba(107,43,255,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">◎</div>
+          <span style="font-size:13px;font-weight:300;color:#888" data-copy="dash_feat3">Demographic breakdowns — age, gender, behavior</span>
+        </div>
+      </div>
+    </div>
+    <!-- Dashboard UI -->
+    <div class="dash-ui sr-scale d1" style="animation:floatDash 7s ease-in-out infinite" id="dash-card">
+      <div class="dash-chrome">
+        <div class="dash-dot" style="background:#ff5f57"></div>
+        <div class="dash-dot" style="background:#ffbd2e"></div>
+        <div class="dash-dot" style="background:#28c840"></div>
+        <div class="dash-url">nexus.io/dashboard/live</div>
+        <div style="display:flex;align-items:center;gap:5px">
+          <div style="width:5px;height:5px;background:#6B2BFF;border-radius:50%;animation:pulse-dot 1.5s infinite"></div>
+          <span style="font-size:9px;color:#6B2BFF;letter-spacing:1px">LIVE</span>
+        </div>
+      </div>
+      <div class="dash-stats-bar">
+        <div class="dash-stat"><div class="dash-stat-val" id="dash-counter">1,247,893</div><div class="dash-stat-lbl">Impressions</div></div>
+        <div class="dash-stat"><div class="dash-stat-val">340,219</div><div class="dash-stat-lbl">Tune-ins</div></div>
+        <div class="dash-stat"><div class="dash-stat-val">128,441</div><div class="dash-stat-lbl">Profiles</div></div>
+        <div class="dash-stat"><div class="dash-stat-val">12</div><div class="dash-stat-lbl">Campaigns</div></div>
+      </div>
+      <div class="dash-tabs">
+        <button class="dash-tab active" onclick="switchTab(this,'map')">⬡ Map</button>
+        <button class="dash-tab" onclick="switchTab(this,'chart')">↗ Analytics</button>
+        <button class="dash-tab" onclick="switchTab(this,'demo')">◎ Demographics</button>
+      </div>
+      <div class="dash-map-area">
+        <canvas id="dash-canvas" style="width:100%;height:100%;display:block"></canvas>
+        <div id="dash-chart" style="display:none;padding:16px 20px">
+          <div style="font-size:9px;color:#444;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">ATTRIBUTION EVENTS / MIN</div>
+          <canvas id="chart-canvas" style="width:100%;height:160px;display:block"></canvas>
+        </div>
+        <div id="dash-demo" style="display:none;padding:16px 20px">
+          <div style="font-size:9px;color:#444;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px">AUDIENCE DEMOGRAPHICS</div>
+          <canvas id="donut-canvas" style="width:80px;height:80px;display:inline-block"></canvas>
+          <div id="demo-legend" style="display:inline-flex;flex-direction:column;gap:6px;vertical-align:top;margin-left:20px;padding-top:8px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ATTRIBUTION ─────────────────────────────────────────── -->
+<section id="attribution" class="s">
+  <div class="attr-layout">
+    <div>
+      <div class="eyebrow sr" data-copy="attr_eyebrow">Cross-Channel Attribution</div>
+      <h2 class="attr-title sr d1"><em data-copy="attr_title_em">From the street</em><br><span data-copy="attr_title_2">to the screen.</span></h2>
+      <p class="attr-body sr d2" data-copy="attr_body">Track the complete user journey. Send targeted mobile offers to audiences who saw your billboard and heard your radio ad — all traced with deterministic precision.</p>
+      <button class="btn-hero-primary sr d3" data-copy="cta_demo">Book a Demo</button>
+    </div>
+    <div class="journey" id="journey">
+      <div class="journey-step" style="transition-delay:0.1s">
+        <div class="journey-icon" style="background:rgba(107,43,255,0.1);border:1px solid rgba(107,43,255,0.3)">🏙️</div>
+        <div>
+          <div class="journey-step-head" data-copy="journey_1_head">Billboard Impression</div>
+          <div class="journey-step-text" data-copy="journey_1_body">Edge AI sensor detects audience presence at your OOH placement in real time</div>
+        </div>
+      </div>
+      <div class="journey-step" style="transition-delay:0.2s">
+        <div class="journey-icon" style="background:rgba(107,43,255,0.1);border:1px solid rgba(107,43,255,0.3)">📻</div>
+        <div>
+          <div class="journey-step-head" data-copy="journey_2_head">Broadcast Tune-In</div>
+          <div class="journey-step-text" data-copy="journey_2_body">2-second acoustic fingerprint silently matches TV or radio broadcast content</div>
+        </div>
+      </div>
+      <div class="journey-step" style="transition-delay:0.3s">
+        <div class="journey-icon" style="background:rgba(107,43,255,0.1);border:1px solid rgba(107,43,255,0.3)">👤</div>
+        <div>
+          <div class="journey-step-head" data-copy="journey_3_head">Audience Profile Built</div>
+          <div class="journey-step-text" data-copy="journey_3_body">Anonymous profile assembled through ethical, consent-driven gamification</div>
+        </div>
+      </div>
+      <div class="journey-step" style="transition-delay:0.4s">
+        <div class="journey-icon" style="background:rgba(107,43,255,0.1);border:1px solid rgba(107,43,255,0.3)">📲</div>
+        <div>
+          <div class="journey-step-head" data-copy="journey_4_head">Mobile Offer Delivered</div>
+          <div class="journey-step-text" data-copy="journey_4_body">Hyper-targeted ad delivered to the matched profile on their mobile device</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">Nexus</div>
+      <div class="footer-brand-tagline" data-copy="footer_tagline">The real-time operating system for offline media intelligence.</div>
+      <div class="footer-badge" style="margin-top:24px">🇹🇳 <span data-copy="footer_built">Built in Tunisia</span></div>
+    </div>
+    <div>
+      <div class="footer-col-head">Platform</div>
+      <a class="footer-link" href="dashboard.html" data-copy="footer_product">Product</a>
+      <a class="footer-link" href="#" data-copy="footer_pricing">Pricing</a>
+      <a class="footer-link" href="#" data-copy="footer_docs">API Documentation</a>
+    </div>
+    <div>
+      <div class="footer-col-head">Partners</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px">
+        <div style="border:1px solid rgba(255,255,255,0.08);padding:6px 14px;border-radius:6px;font-size:12px;color:#555">Tunisie Telecom</div>
+        <div style="border:1px solid rgba(255,255,255,0.08);padding:6px 14px;border-radius:6px;font-size:12px;color:#555">Mosaique FM</div>
+        <div style="border:1px solid rgba(255,255,255,0.08);padding:6px 14px;border-radius:6px;font-size:12px;color:#555">Ooredoo</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Nexus Intelligence. All rights reserved.</span>
+    <div style="display:flex;gap:20px">
+      <a class="footer-link" style="margin:0" href="#" data-copy="footer_privacy">Privacy Policy</a>
+      <a class="footer-link" style="margin:0" href="#" data-copy="footer_contact">Contact</a>
+    </div>
+    <div class="live-indicator"><div class="live-dot"></div> Systems Operational</div>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ─────────────────────────────────────────────── -->
+<script src="js/i18n.js"></script>
+<script src="js/cursor.js"></script>
+<script src="js/canvas/hero-canvas.js"></script>
+<script src="js/canvas/map-canvas.js"></script>
+<script src="js/canvas/chart-canvas.js"></script>
+<script src="js/counter.js"></script>
+<script src="js/scroll.js"></script>
+<script src="js/tilt.js"></script>
+<script src="js/dashboard-tabs.js"></script>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" class="dash-page">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Dashboard — Live Intelligence</title>
+<meta name="description" content="Real-time campaign intelligence dashboard. Monitor OOH impressions, TV/Radio tune-ins, and cross-channel attribution across Tunisia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body style="background:#08080B;cursor:auto">
+
+<div class="dash-app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="dash-sidebar">
+    <div class="dash-sidebar-brand">
+      <div class="dash-sidebar-logo">N</div>
+      <div class="dash-sidebar-name">Nexus</div>
+    </div>
+    <nav class="dash-sidebar-nav">
+      <div class="dash-sidebar-section">
+        <div class="dash-sidebar-label">Overview</div>
+        <button class="dash-nav-item active">
+          <span class="nav-icon">📊</span> Dashboard
+          <span class="nav-badge">Live</span>
+        </button>
+        <button class="dash-nav-item">
+          <span class="nav-icon">📡</span> Campaigns
+          <span class="nav-badge">12</span>
+        </button>
+        <button class="dash-nav-item">
+          <span class="nav-icon">🗺️</span> Coverage Map
+        </button>
+      </div>
+      <div class="dash-sidebar-section">
+        <div class="dash-sidebar-label">Components</div>
+        <button class="dash-nav-item" onclick="window.location='demo.html'">
+          <span class="nav-icon">📹</span> OOH Vision
+        </button>
+        <button class="dash-nav-item">
+          <span class="nav-icon">🎵</span> Audio Engine
+        </button>
+        <button class="dash-nav-item">
+          <span class="nav-icon">📶</span> Telecom Grid
+        </button>
+        <button class="dash-nav-item">
+          <span class="nav-icon">👥</span> Profiles
+        </button>
+      </div>
+      <div class="dash-sidebar-section">
+        <div class="dash-sidebar-label">System</div>
+        <button class="dash-nav-item">
+          <span class="nav-icon">⚙️</span> Settings
+        </button>
+        <button class="dash-nav-item" onclick="window.location='index.html'">
+          <span class="nav-icon">🏠</span> Back to Site
+        </button>
+      </div>
+    </nav>
+    <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.05)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6B2BFF,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:600">A</div>
+        <div>
+          <div style="font-size:11px;color:#bbb">Admin</div>
+          <div style="font-size:9px;color:#444">admin@nexus.io</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── TOP BAR ── -->
+  <header class="dash-topbar">
+    <div class="dash-topbar-left">
+      <div class="dash-topbar-campaign">Ramadan Campaign 2026 — Tunis Metro</div>
+      <div style="font-size:10px;color:#444;border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 10px">OOH + TV + Radio</div>
+    </div>
+    <div class="dash-topbar-right">
+      <div style="font-size:10px;color:#444;letter-spacing:0.5px" id="dash-time"></div>
+      <div class="dash-topbar-live">
+        <div class="live-dot"></div>
+        LIVE FEED
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN ── -->
+  <main class="dash-main">
+    <!-- Metrics Row -->
+    <div class="dash-metrics">
+      <div class="dash-metric-card">
+        <div class="dash-metric-label">OOH Impressions</div>
+        <div class="dash-metric-value" id="dm-impressions">1,247,893</div>
+        <div class="dash-metric-delta up">↑ 12.4% vs last week</div>
+      </div>
+      <div class="dash-metric-card">
+        <div class="dash-metric-label">TV/Radio Tune-ins</div>
+        <div class="dash-metric-value" id="dm-tuneins">340,219</div>
+        <div class="dash-metric-delta up">↑ 8.1% vs last week</div>
+      </div>
+      <div class="dash-metric-card">
+        <div class="dash-metric-label">Active Profiles</div>
+        <div class="dash-metric-value" id="dm-profiles">128,441</div>
+        <div class="dash-metric-delta up">+2,142 today</div>
+      </div>
+      <div class="dash-metric-card">
+        <div class="dash-metric-label">Attribution Rate</div>
+        <div class="dash-metric-value">94.7%</div>
+        <div class="dash-metric-delta up">↑ 1.2pp</div>
+      </div>
+    </div>
+
+    <!-- Map + Events -->
+    <div class="dash-panels">
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <div class="dash-panel-title">Live Coverage Map — Tunis Metro</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:#555">
+            <div style="width:4px;height:4px;background:#6B2BFF;border-radius:50%;animation:pulse-dot 1.5s infinite"></div>
+            <span id="dm-node-count">147</span> active edge nodes
+          </div>
+        </div>
+        <div class="dash-panel-body">
+          <div class="dash-map-panel">
+            <canvas id="dash-main-map" style="width:100%;height:100%;display:block"></canvas>
+            <div class="dash-map-overlay">
+              <div class="dash-map-city" style="top:18%;left:32%">Centre Ville<span class="city-count">42,891 impressions</span></div>
+              <div class="dash-map-city" style="top:12%;right:20%">La Marsa<span class="city-count">18,442 impressions</span></div>
+              <div class="dash-map-city" style="bottom:32%;left:14%">Ariana<span class="city-count">31,205 impressions</span></div>
+              <div class="dash-map-city" style="bottom:22%;right:16%">Menzah<span class="city-count">24,891 impressions</span></div>
+              <div class="dash-map-city" style="top:45%;left:55%">Lac 1<span class="city-count">15,623 impressions</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <div class="dash-panel-title">Live Attribution Events</div>
+          <div style="font-size:9px;color:#6B2BFF;background:rgba(107,43,255,0.1);padding:3px 10px;border-radius:100px" id="dm-event-count">4,521,882</div>
+        </div>
+        <div class="dash-panel-body">
+          <div class="dash-events" id="dash-event-feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom: Chart + Demographics + Funnel -->
+    <div class="dash-bottom">
+      <!-- Attribution Chart -->
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <div class="dash-panel-title">Attribution Events / Min</div>
+        </div>
+        <div class="dash-panel-body">
+          <div class="dash-chart-area">
+            <canvas id="dash-chart-main" style="width:100%;height:100%;display:block"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Demographics -->
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <div class="dash-panel-title">Audience Demographics</div>
+        </div>
+        <div class="dash-panel-body">
+          <div class="dash-donut-area">
+            <canvas id="dash-donut" width="120" height="120"></canvas>
+            <div id="dash-demo-legend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telecom Density -->
+      <div class="dash-panel">
+        <div class="dash-panel-header">
+          <div class="dash-panel-title">Cell Sector Density</div>
+          <div style="font-size:9px;color:#444">C/I Ratio</div>
+        </div>
+        <div class="dash-panel-body">
+          <div class="dash-telecom-panel" id="telecom-sectors"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/canvas/map-canvas.js"></script>
+<script src="js/dashboard-app.js"></script>
+</body>
+</html>

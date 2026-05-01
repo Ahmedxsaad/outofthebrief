@@ -1,0 +1,82 @@
+/* NEXUS RESPONSIVE — All media queries consolidated */
+@media (max-width: 960px) {
+  body { cursor: auto; }
+  #cursor, #cursor-ring { display: none !important; }
+  button, a { cursor: pointer !important; }
+  nav { padding: 0 16px; height: 56px; }
+  .nav-wordmark { font-size: 12px; letter-spacing: 3px; }
+  .nav-cta { padding: 7px 16px; font-size: 10px; margin-left: 10px; }
+  .lang-btn { padding: 4px 9px; font-size: 9px; }
+  .nav-links { display: none; }
+  .hero-inner { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: auto; }
+  #hero { padding-top: 56px; min-height: auto; }
+  .hero-left { padding: 40px 20px 28px; }
+  .hero-headline .line { white-space: normal; }
+  .hl-solid, .hl-violet-italic, .hl-ghost, .hl-outline { font-size: clamp(36px, 10vw, 56px); }
+  .hero-sub { font-size: 13px; max-width: 100%; margin-bottom: 20px; }
+  .hero-ctas { gap: 10px; margin-bottom: 24px; }
+  .btn-hero-primary { padding: 12px 24px; font-size: 9px; }
+  .btn-hero-ghost { padding: 11px 20px; font-size: 9px; }
+  .hero-microstats { padding-top: 20px; }
+  .hero-microstat-val { font-size: 22px; }
+  .hero-microstat-lbl { font-size: 7px; }
+  .hero-right { padding: 0 20px 40px; }
+  .hero-data-card { max-width: 100%; }
+  .hero-data-card::before { display: none; }
+  .hero-right::before { width: 300px; height: 300px; }
+  #hero::before { display: none; }
+  .dc-stats { grid-template-columns: 1fr 1fr; }
+  .dc-stat { padding: 10px 12px; }
+  .dc-stat-val { font-size: 15px; }
+  .dc-map { height: 140px; }
+  .dc-feed { max-height: 90px; }
+  .dc-feed-item { padding: 4px 14px; }
+  .dc-campaign-name { font-size: 10px; }
+  .marquee-section { padding: 10px 0; }
+  .marquee-item { padding: 0 20px; font-size: 9px; letter-spacing: 1.5px; }
+  .s { padding: 60px 20px; }
+  .s-sm { padding: 48px 20px; }
+  .eyebrow { font-size: 8px; margin-bottom: 18px; }
+  .problem-grid { grid-template-columns: 1fr; gap: 0; margin-top: 36px; }
+  .problem-half { padding: 36px 28px; }
+  .problem-title { font-size: clamp(26px, 6vw, 38px); margin-bottom: 24px; }
+  .problem-item { font-size: 14px; padding: 10px 0; }
+  .pillars-row { grid-template-columns: 1fr; border: none; gap: 1px; margin-top: 36px; }
+  .pillar { padding: 36px 28px; border: 1px solid rgba(var(--c-dark-rgb),0.1); border-right: 1px solid rgba(var(--c-dark-rgb),0.1); }
+  .pillar-num { font-size: 52px; margin-bottom: 20px; }
+  .pillar-title { font-size: 22px; }
+  .pillar::after { left: 28px; right: 28px; }
+  #numbers { padding: 60px 20px; }
+  .numbers-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .number-val { font-size: clamp(40px, 12vw, 64px); }
+  .number-lbl { font-size: 9px; margin-top: 8px; }
+  #numbers::before { font-size: 180px; }
+  .dash-layout { grid-template-columns: 1fr; gap: 36px; }
+  .dash-title { font-size: clamp(32px, 8vw, 48px); }
+  .dash-body { font-size: 14px; margin-bottom: 24px; }
+  .dash-ui { border-radius: 12px; }
+  .dash-stats-bar { grid-template-columns: 1fr 1fr; }
+  .dash-stat { padding: 10px 14px; }
+  .dash-stat-val { font-size: 16px; }
+  .dash-map-area { height: 180px; }
+  .attr-layout { grid-template-columns: 1fr; gap: 36px; }
+  .attr-title { font-size: clamp(32px, 8vw, 52px); }
+  .journey-step { gap: 16px; padding: 16px 0; }
+  .journey-icon { width: 36px; height: 36px; font-size: 14px; }
+  .journey::before { left: 17px; }
+  footer { padding: 48px 20px 24px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; margin-bottom: 32px; }
+  .footer-brand-name { font-size: 36px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .display-num { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-eyebrow { font-size: 8px; letter-spacing: 2px; }
+  .hero-headline { margin-bottom: 20px; }
+  .hl-solid, .hl-violet-italic, .hl-ghost, .hl-outline { font-size: clamp(32px, 9vw, 48px); }
+  .hero-microstats { flex-wrap: wrap; gap: 16px; }
+  .hero-microstat { flex: 0 0 auto; border-right: none; padding-right: 0; margin-right: 0; }
+  .dc-stats { grid-template-columns: 1fr 1fr; }
+  .numbers-grid { gap: 20px; }
+  .nav-cta { display: none; }
+}

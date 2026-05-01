@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="demo-page">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Live Hackathon Demo</title>
+<meta name="description" content="Live demonstration of Nexus real-time media measurement: Computer Vision, Audio Fingerprinting, and Telecom Density.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/demo.css">
+<!-- TensorFlow.js + COCO-SSD for real person detection -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+</head>
+<body style="background:#08080B;cursor:auto">
+
+<!-- ── NAV ── -->
+<nav class="demo-nav">
+  <div class="demo-nav-brand">
+    <div class="demo-nav-logo">N</div>
+    <div>
+      <div class="demo-nav-title">Nexus</div>
+      <div class="demo-nav-subtitle">Live Demo Mode</div>
+    </div>
+  </div>
+  <div class="demo-nav-links">
+    <a class="demo-nav-link" href="index.html">Home</a>
+    <a class="demo-nav-link" href="dashboard.html">Dashboard</a>
+    <a class="demo-nav-link" href="demo.html" style="color:#6B2BFF">Live Demo</a>
+  </div>
+</nav>
+
+<!-- ── CONTENT ── -->
+<div class="demo-content">
+  <div class="demo-header">
+    <h1>Nexus <em>Live</em></h1>
+    <p>Real-time demonstration of all three measurement components. Start each module to see live data flowing into the unified attribution dashboard below.</p>
+  </div>
+
+  <!-- ── THREE PANELS ── -->
+  <div class="demo-grid">
+
+    <!-- PANEL 1: OOH Vision (Camera + COCO-SSD) -->
+    <div class="demo-panel" id="vision-panel">
+      <div class="demo-panel-header">
+        <div class="demo-panel-title"><span class="panel-icon">📹</span> OOH Vision — Vehicle & Pedestrian Counter</div>
+        <div class="demo-panel-status idle" id="vision-status">Idle</div>
+      </div>
+      <div class="demo-panel-body">
+        <div class="camera-container" id="camera-container">
+          <div class="camera-placeholder" id="camera-placeholder">
+            <div class="cam-icon">🚗</div>
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase">Camera Feed</div>
+            <button class="demo-start-btn" id="start-vision" onclick="startVision()">Start Detection</button>
+            <div style="font-size:9px;color:#333;margin-top:4px">Detects: Cars · Trucks · Buses · People · Motorcycles</div>
+          </div>
+          <video id="camera-video" autoplay playsinline style="display:none"></video>
+          <canvas id="camera-overlay" style="display:none"></canvas>
+        </div>
+        <div id="vision-breakdown" style="padding:4px 12px;font-size:10px;min-height:16px;color:#444">Waiting for detection...</div>
+        <div class="camera-stats">
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="vision-cars" style="color:#22c55e">0</div>
+            <div class="camera-stat-lbl">🚗 Vehicles</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="vision-people" style="color:#6B2BFF">0</div>
+            <div class="camera-stat-lbl">🚶 People</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="vision-total">0</div>
+            <div class="camera-stat-lbl">Total Count</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="vision-fps">--</div>
+            <div class="camera-stat-lbl">FPS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: Audio Fingerprinting -->
+    <div class="demo-panel" id="audio-panel">
+      <div class="demo-panel-header">
+        <div class="demo-panel-title"><span class="panel-icon">🎵</span> Audio Fingerprinting</div>
+        <div class="demo-panel-status idle" id="audio-status">Idle</div>
+      </div>
+      <div class="demo-panel-body">
+        <div class="audio-container" id="audio-container">
+          <canvas id="audio-waveform" class="audio-waveform"></canvas>
+          <div id="audio-match-area"></div>
+          <button class="audio-btn" id="start-audio" onclick="startAudioCapture()">🎤 Listen for Broadcast</button>
+          <div style="font-size:9px;color:#333;text-align:center">
+            Play a reference ad and click to detect · <span id="db-status" style="color:#fbbf24">Loading DB...</span><br>
+            <a href="https://www.youtube.com/watch?v=fdu9IuTASgE" target="_blank" style="color:#6B2BFF;text-decoration:underline">Tunisie Telecom Ad 1</a> · 
+            <a href="https://www.youtube.com/watch?v=QhNnl7nr9wo" target="_blank" style="color:#6B2BFF;text-decoration:underline">Ad 2</a> · 
+            <a href="https://www.youtube.com/watch?v=YVxBBB4keBU" target="_blank" style="color:#6B2BFF;text-decoration:underline">Mosaique FM</a>
+          </div>
+        </div>
+        <div class="camera-stats">
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="audio-matches">0</div>
+            <div class="camera-stat-lbl">Matches Found</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="audio-channel">--</div>
+            <div class="camera-stat-lbl">Last Brand</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="audio-confidence">--</div>
+            <div class="camera-stat-lbl">Confidence</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 3: Telecom Density -->
+    <div class="demo-panel" id="telecom-panel">
+      <div class="demo-panel-header">
+        <div class="demo-panel-title"><span class="panel-icon">📶</span> Telecom Density</div>
+        <div class="demo-panel-status active" id="telecom-status">Simulating</div>
+      </div>
+      <div class="demo-panel-body">
+        <div class="telecom-container">
+          <div class="telecom-mini-map">
+            <canvas id="telecom-map" style="width:100%;height:100%;display:block"></canvas>
+          </div>
+          <div style="padding:12px 16px" id="telecom-demo-sectors"></div>
+        </div>
+        <div class="camera-stats">
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="telecom-density">4,821</div>
+            <div class="camera-stat-lbl">Est. Density</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val" id="telecom-ci">14.2</div>
+            <div class="camera-stat-lbl">Avg C/I Ratio</div>
+          </div>
+          <div class="camera-stat">
+            <div class="camera-stat-val">6</div>
+            <div class="camera-stat-lbl">Active Sectors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── UNIFIED ATTRIBUTION DASHBOARD ── -->
+  <div class="demo-unified">
+    <div class="demo-unified-header">
+      <div class="demo-unified-title">⚡ Unified Attribution Dashboard — All Channels Combined</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="live-dot"></div>
+        <span style="font-size:9px;color:#6B2BFF;letter-spacing:1.5px;text-transform:uppercase">Real-Time</span>
+      </div>
+    </div>
+    <div class="demo-unified-body">
+      <div class="demo-unified-stat">
+        <div class="demo-unified-val" id="unified-ooh">0</div>
+        <div class="demo-unified-lbl">OOH Impressions (Vision)</div>
+        <div class="demo-unified-delta" style="color:#6B2BFF" id="unified-ooh-rate">0/min</div>
+      </div>
+      <div class="demo-unified-stat">
+        <div class="demo-unified-val" id="unified-audio">0</div>
+        <div class="demo-unified-lbl">Audio Matches</div>
+        <div class="demo-unified-delta" style="color:#22c55e" id="unified-audio-channel">--</div>
+      </div>
+      <div class="demo-unified-stat">
+        <div class="demo-unified-val" id="unified-telecom">4,821</div>
+        <div class="demo-unified-lbl">Telecom Density</div>
+        <div class="demo-unified-delta" style="color:#fbbf24" id="unified-telecom-ci">C/I: 14.2</div>
+      </div>
+      <div class="demo-unified-stat">
+        <div class="demo-unified-val" id="unified-total">0</div>
+        <div class="demo-unified-lbl">Total Attribution Events</div>
+        <div class="demo-unified-delta" style="color:#6B2BFF">Cross-Channel</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/canvas/map-canvas.js"></script>
+<script src="assets/fingerprints.js"></script>
+<script src="js/demo-app.js"></script>
+</body>
+</html>

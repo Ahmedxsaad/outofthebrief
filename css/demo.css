@@ -1,0 +1,182 @@
+/* NEXUS DEMO PAGE STYLES */
+
+.demo-page { background: #08080B; color: #e0e0e8; min-height: 100vh; }
+
+/* ── DEMO NAV ── */
+.demo-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; height: 60px;
+  background: rgba(12,12,15,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.demo-nav-brand { display: flex; align-items: center; gap: 10px; }
+.demo-nav-logo {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: linear-gradient(135deg, #6B2BFF, #8B5CF6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff;
+}
+.demo-nav-title { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #e0e0e8; }
+.demo-nav-subtitle { font-size: 9px; color: #6B2BFF; letter-spacing: 1px; text-transform: uppercase; }
+.demo-nav-links { display: flex; align-items: center; gap: 16px; }
+.demo-nav-link {
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  color: #555; text-decoration: none; padding: 6px 12px;
+  border-radius: 6px; transition: all 0.2s;
+}
+.demo-nav-link:hover { color: #aaa; background: rgba(255,255,255,0.03); }
+
+/* ── DEMO LAYOUT ── */
+.demo-content { padding: 76px 24px 24px; }
+.demo-header {
+  text-align: center; margin-bottom: 32px;
+}
+.demo-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px; font-weight: 300; color: #f0f0f8;
+  letter-spacing: -1px; margin-bottom: 8px;
+}
+.demo-header h1 em { color: #6B2BFF; font-style: italic; }
+.demo-header p { font-size: 13px; color: #555; max-width: 600px; margin: 0 auto; }
+
+/* ── DEMO GRID ── */
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.demo-panel {
+  background: #0E0E12;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.demo-panel:hover { border-color: rgba(107,43,255,0.15); }
+.demo-panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.demo-panel-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #666;
+}
+.demo-panel-title .panel-icon { font-size: 14px; }
+.demo-panel-status {
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+}
+.demo-panel-status.idle { background: rgba(255,255,255,0.05); color: #555; }
+.demo-panel-status.active { background: rgba(107,43,255,0.12); color: #6B2BFF; border: 1px solid rgba(107,43,255,0.2); }
+.demo-panel-status.detecting { background: rgba(34,197,94,0.1); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); animation: pulse-dot 1.5s infinite; }
+.demo-panel-body { padding: 0; position: relative; }
+
+/* ── CAMERA PANEL ── */
+.camera-container { position: relative; width: 100%; height: 300px; background: #080808; overflow: hidden; }
+.camera-container video { width: 100%; height: 100%; object-fit: cover; }
+.camera-container canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.camera-placeholder {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; gap: 12px; color: #333;
+}
+.camera-placeholder .cam-icon { font-size: 36px; }
+.camera-stats {
+  display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,0.04);
+}
+.camera-stat {
+  flex: 1; padding: 12px 16px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.camera-stat:last-child { border-right: none; }
+.camera-stat-val { font-size: 20px; font-weight: 600; color: #f0f0f8; }
+.camera-stat-lbl { font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-top: 2px; }
+
+/* ── AUDIO PANEL ── */
+.audio-container { height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 20px; }
+.audio-waveform { width: 100%; height: 80px; }
+.audio-match-result {
+  text-align: center; padding: 16px;
+  animation: fadeInScale 0.5s ease;
+}
+@keyframes fadeInScale { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+.audio-match-channel { font-size: 18px; font-weight: 600; color: #f0f0f8; margin-bottom: 4px; }
+.audio-match-confidence { font-size: 11px; color: #22c55e; }
+.audio-hash-display {
+  font-family: monospace; font-size: 9px; color: #333;
+  background: rgba(255,255,255,0.03); padding: 4px 8px;
+  border-radius: 4px; margin-top: 8px; word-break: break-all;
+}
+.audio-btn {
+  padding: 12px 28px; border-radius: 100px;
+  background: linear-gradient(135deg, #6B2BFF, #8B5CF6);
+  color: #fff; border: none; font-size: 11px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 4px 20px rgba(107,43,255,0.3);
+}
+.audio-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(107,43,255,0.5); }
+.audio-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.audio-listening {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: #6B2BFF;
+}
+.audio-listening .listen-dots span {
+  display: inline-block; width: 4px; height: 4px;
+  background: #6B2BFF; border-radius: 50%;
+  margin: 0 2px;
+  animation: listenBounce 1.2s infinite;
+}
+.audio-listening .listen-dots span:nth-child(2) { animation-delay: 0.2s; }
+.audio-listening .listen-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes listenBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+/* ── TELECOM PANEL ── */
+.telecom-container { height: 300px; }
+.telecom-mini-map { width: 100%; height: 200px; }
+
+/* ── DEMO BOTTOM — Unified Dashboard ── */
+.demo-unified {
+  background: #0E0E12;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.demo-unified-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.demo-unified-title {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #555;
+}
+.demo-unified-body {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.demo-unified-stat {
+  padding: 20px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.04);
+}
+.demo-unified-stat:last-child { border-right: none; }
+.demo-unified-val { font-size: 28px; font-weight: 600; color: #f0f0f8; letter-spacing: -1px; }
+.demo-unified-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #444; margin-top: 4px; }
+.demo-unified-delta { font-size: 10px; margin-top: 4px; }
+
+/* ── START BUTTONS ── */
+.demo-start-btn {
+  padding: 10px 20px; border-radius: 8px;
+  background: rgba(107,43,255,0.12);
+  border: 1px solid rgba(107,43,255,0.25);
+  color: #6B2BFF; font-size: 10px;
+  letter-spacing: 1px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  font-family: 'DM Sans', sans-serif;
+}
+.demo-start-btn:hover { background: rgba(107,43,255,0.2); }
+.demo-start-btn.running { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: #22c55e; }

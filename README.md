@@ -99,6 +99,91 @@ real matches and false-positive probes.
 Latest run: **88% top-1 / 100% recall**, real-vs-noise coherence gap
 **4.6×**, FP probes safely below the threshold of 8.
 
+## Telecom Macro Feature
+
+The macro feature computes audience density from cellular network infrastructure signals. It maps physical billboards to mobile sectors and calculates deterministic impression density using real-time telemetry.
+
+**Key Inputs**:
+- Capacity utilization (%) of each mobile macro sector
+- Carrier-to-Interference (C/I) ratio (dB) measuring signal quality
+- Calibration factors from edge-node field measurements
+- Billboard-to-sector geographic mappings
+
+**Density Formula**:
+```
+D = (w_cap × norm_capacity + w_ci × inverse_ci) × calibration
+  = (0.65 × cap_norm + 0.35 × (1 - ci_norm)) × calibration
+```
+Result clamped to [0, 100].
+
+### Macro Endpoints
+
+#### Ingest live sector telemetry
+```bash
+curl -X POST http://localhost:8000/api/telecom/ingest \
+  -H "Content-Type: application/json" \
+  -d '{
+    "timestamp": 1714550400,
+    "sectors": [
+      {
+        "sector_id": "tunis_centre_a",
+        "name": "Tunis Centre (Sector A)",
+        "capacity_used_pct": 87.5,
+        "ci_db": 12.4,
+        "calibration": 1.05
+      }
+    ]
+  }'
+```
+
+#### Query sector densities
+```bash
+curl http://localhost:8000/api/telecom/macro | jq .
+```
+
+#### Map billboards to sectors
+```bash
+curl -X POST http://localhost:8000/api/telecom/mappings \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mappings": [
+      {"billboard_id": "bb_01", "sector_id": "tunis_centre_a", "weight": 0.8},
+      {"billboard_id": "bb_01", "sector_id": "tunis_centre_b", "weight": 0.2}
+    ]
+  }'
+```
+
+#### Query billboard density
+```bash
+curl http://localhost:8000/api/telecom/billboards/bb_01
+```
+
+### Configuration
+
+Tunable parameters in `backend/app/config.py`:
+
+| Parameter | Default | Purpose |
+|-----------|---------|---------|
+| `TELECOM_STALE_TTL_SEC` | 45 | Time before status → stale |
+| `TELECOM_WEIGHT_CAPACITY` | 0.65 | Formula weight |
+| `TELECOM_WEIGHT_CI` | 0.35 | Formula weight |
+| `TELECOM_GLOBAL_CALIBRATION` | 1.0 | Global multiplier |
+| `TELECOM_INGEST_TOKEN` | None | Optional auth token |
+
+### Status Lifecycle
+
+- **static_config** — App startup, seeded from static JSON
+- **live** — First ingest received
+- **stale** — No updates for > TTL (45s)
+
+### Testing
+
+```bash
+python scripts/test_macro_synthetic.py
+```
+
+Expected: 43/43 tests pass (formula validation, mapping, status transitions).
+
 ## What changed in this transformation
 
 ### Removed (was fake)

@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "NEXUS Listen",
+    "slug": "nexus-listen",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nexus.listen"
+    },
+    "android": {
+      "package": "com.nexus.listen",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow NEXUS to access your microphone to identify nearby broadcast audio."
+        }
+      ],
+      "expo-asset"
+    ],
+    "extra": {
+      "apiBase": "http://192.168.1.154:8000"
+    }
+  }
+}

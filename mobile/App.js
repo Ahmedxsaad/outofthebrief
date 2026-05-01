@@ -8,40 +8,41 @@ import {
   Text,
   View,
 } from 'react-native';
-import { Audio } from 'expo-av';
+import {
+  useAudioRecorder,
+  RecordingPresets,
+  setAudioModeAsync,
+  requestRecordingPermissionsAsync,
+} from 'expo-audio';
 import Constants from 'expo-constants';
 
 const API_BASE = Constants.expoConfig?.extra?.apiBase || 'http://localhost:8000';
 const CLIENT_ID = 'mobile_' + Math.random().toString(36).slice(2, 10);
 const CLIP_MS   = 3000;
 
-// Cross-platform recording config — iOS records WAV, Android records m4a/aac.
-// The backend decodes both via ffmpeg, so we don't care about the exact format.
-const RECORDING_OPTIONS = {
-  isMeteringEnabled: false,
+// Custom recording preset — narrower bandwidth than HIGH_QUALITY since we
+// only need ≤ 8 kHz content for fingerprinting (backend resamples anyway).
+// iOS records LinearPCM (.wav), Android records m4a/AAC. Backend decodes
+// both via ffmpeg, so format doesn't matter.
+const RECORDING_PRESET = {
+  ...RecordingPresets.LOW_QUALITY,
   android: {
-    extension: '.m4a',
-    outputFormat: Audio.AndroidOutputFormat.MPEG_4,
-    audioEncoder: Audio.AndroidAudioEncoder.AAC,
+    ...RecordingPresets.LOW_QUALITY.android,
     sampleRate: 22050,
     numberOfChannels: 1,
     bitRate: 96000,
   },
   ios: {
-    extension: '.wav',
-    outputFormat: Audio.IOSOutputFormat.LINEARPCM,
-    audioQuality: Audio.IOSAudioQuality.MEDIUM,
+    ...RecordingPresets.LOW_QUALITY.ios,
     sampleRate: 22050,
     numberOfChannels: 1,
     bitRate: 96000,
-    linearPCMBitDepth: 16,
-    linearPCMIsBigEndian: false,
-    linearPCMIsFloat: false,
   },
-  web: { mimeType: 'audio/webm', bitsPerSecond: 128000 },
 };
 
 export default function App() {
+  const recorder = useAudioRecorder(RECORDING_PRESET);
+
   const [status, setStatus] = useState('idle');     // idle | listening | matching | matched | nomatch | error
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -51,41 +52,47 @@ export default function App() {
   const continuousRef = useRef(continuous);
   useEffect(() => { continuousRef.current = continuous; }, [continuous]);
 
-  // Request mic permission once on mount
+  // Permission + audio session setup
   useEffect(() => {
     (async () => {
-      const { status } = await Audio.requestPermissionsAsync();
-      if (status !== 'granted') setError('Microphone permission denied');
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
+      try {
+        const { status: permStatus } = await requestRecordingPermissionsAsync();
+        if (permStatus !== 'granted') {
+          setError('Microphone permission denied');
+          return;
+        }
+        await setAudioModeAsync({
+          allowsRecording: true,
+          playsInSilentMode: true,
+        });
+      } catch (e) {
+        console.warn('audio init', e);
+        setError('Audio init failed');
+      }
     })();
   }, []);
 
   async function recordAndMatchOnce() {
     setStatus('listening'); setError(null);
 
-    let recording;
     try {
-      const r = new Audio.Recording();
-      await r.prepareToRecordAsync(RECORDING_OPTIONS);
-      await r.startAsync();
-      recording = r;
+      await recorder.prepareToRecordAsync();
+      recorder.record();
 
       await new Promise((resolve) => setTimeout(resolve, CLIP_MS));
 
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
+      await recorder.stop();
+      const uri = recorder.uri;
+      if (!uri) throw new Error('no recording uri');
 
       setStatus('matching');
 
-      // Multipart upload of the recorded file
+      const isWav = uri.toLowerCase().endsWith('.wav');
       const form = new FormData();
       form.append('file', {
         uri,
-        name: uri.endsWith('.wav') ? 'clip.wav' : 'clip.m4a',
-        type: uri.endsWith('.wav') ? 'audio/wav' : 'audio/mp4',
+        name: isWav ? 'clip.wav' : 'clip.m4a',
+        type: isWav ? 'audio/wav' : 'audio/mp4',
       });
       form.append('client_id', CLIENT_ID);
 
@@ -107,7 +114,6 @@ export default function App() {
       console.warn('match error', e);
       setError(e.message || 'unknown error');
       setStatus('error');
-      try { await recording?.stopAndUnloadAsync(); } catch {}
     }
   }
 

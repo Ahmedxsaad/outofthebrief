@@ -8,13 +8,20 @@
     "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true,
-      "infoPlist": {
-        "NSMicrophoneUsageDescription": "NEXUS listens to nearby audio to identify broadcast content."
-      }
+      "bundleIdentifier": "com.nexus.listen"
     },
     "android": {
+      "package": "com.nexus.listen",
       "permissions": ["android.permission.RECORD_AUDIO"]
     },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow NEXUS to access your microphone to identify nearby broadcast audio."
+        }
+      ]
+    ],
     "extra": {
       "apiBase": "http://192.168.1.154:8000"
     }

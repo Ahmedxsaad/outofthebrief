@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "NEXUS Listen",
+    "slug": "nexus-listen",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "platforms": ["ios", "android"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "NEXUS listens to nearby audio to identify broadcast content."
+      }
+    },
+    "android": {
+      "permissions": ["android.permission.RECORD_AUDIO"]
+    },
+    "extra": {
+      "apiBase": "http://192.168.1.154:8000"
+    }
+  }
+}

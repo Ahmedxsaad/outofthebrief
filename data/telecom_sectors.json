@@ -1,0 +1,8 @@
+[
+  { "name": "Tunis Centre (Sector A)",   "capacity_pct": 87, "ci_db": 12.4 },
+  { "name": "Ariana Nord (Sector B)",    "capacity_pct": 72, "ci_db": 18.1 },
+  { "name": "La Marsa (Sector C)",       "capacity_pct": 45, "ci_db": 24.6 },
+  { "name": "Menzah VI (Sector D)",      "capacity_pct": 91, "ci_db":  8.2 },
+  { "name": "Lac 1 Business (Sector E)", "capacity_pct": 68, "ci_db": 15.8 },
+  { "name": "Bardo (Sector F)",          "capacity_pct": 54, "ci_db": 21.3 }
+]

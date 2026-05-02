@@ -9,3 +9,7 @@ venv/
 .pytest_cache/
 
 .vscode/
+
+# vehicle_profiling cache
+vehicle_profiling/.profile_cache/
+vehicle_profiling/yolo*.pt

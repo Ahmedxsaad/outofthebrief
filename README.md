@@ -4,7 +4,7 @@
 > fingerprinting, and telecom signals unified into one live dashboard.
 
 <p align="center">
-  <img src="docs/hero.jpg" alt="Vehicle profiling demo — YOLOv11 + ByteTrack + Gemini identifying make / model / segment / price in real traffic footage" />
+  <img src="docs/hero.png" alt="Vehicle profiling demo — YOLOv11 + ByteTrack + Gemini identifying make / model / segment / price in real traffic footage" />
   <br/>
   <sub><i>Vehicle profiling pipeline: YOLOv11x + ByteTrack + Gemini Flash Lite.</i></sub>
 </p>

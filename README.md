@@ -1,239 +1,148 @@
-# NEXUS
+# Nexus
 
-Cross-channel media measurement: out-of-home (vision), broadcast (audio
-fingerprinting), and telecom signals unified into a single live dashboard.
+> Cross-channel media measurement — out-of-home vision, broadcast audio
+> fingerprinting, and telecom signals unified into one live dashboard.
 
-## Architecture
+<p align="center">
+  <img src="docs/hero.jpg" alt="Vehicle profiling demo — YOLOv11 + ByteTrack + Gemini identifying make / model / segment / price in real traffic footage" />
+  <br/>
+  <sub><i>Vehicle profiling pipeline: YOLOv11x + ByteTrack + Gemini Flash Lite.</i></sub>
+</p>
 
-```
-┌──────────────────────────── frontend/ (static, served by FastAPI) ────────┐
-│  index.html  demo.html  dashboard.html                                    │
-│                                                                           │
-│  js/services/                                                             │
-│    api.js                  — fetch wrapper (NexusAPI)                     │
-│    audio-fingerprint.js    — client-side DSP (NexusFingerprint)           │
-│                              mirrors core/fingerprint.py                  │
-│  js/demo-app.js            — vision + mic capture + telecom               │
-│  js/dashboard-app.js       — counters from /api/metrics + SSE feed        │
-└────────────────────────────────────────┬──────────────────────────────────┘
-                                         │ POST /api/match    (hashes)
-                                         │ GET  /api/tracks
-                                         │ GET  /api/metrics
-                                         │ POST /api/metrics/event
-                                         │ GET  /api/events   (SSE)
-                                         │ GET  /api/telecom/sectors
-┌────────────────────────────────────────▼──────────────────────────────────┐
-│ backend/app/                                                              │
-│   main.py            FastAPI, CORS, mounts /frontend, lifespan loads DB   │
-│   api/               match · tracks · metrics · telecom · health          │
-│   db/store.py        JSON-backed wrapper around core.matcher.HashIndex    │
-│   services/          events (SSE pub/sub) · metrics · ingestion           │
-│   schemas.py         Pydantic models (request/response)                   │
-└────────────────────────────────────────┬──────────────────────────────────┘
-                                         │
-┌────────────────────────────────────────▼──────────────────────────────────┐
-│ core/                  Pure-Python DSP library — single source of truth   │
-│   config.py            STFT/peak/hash constants                           │
-│   audio.py             load_audio (resample, mono-mix)                    │
-│   fingerprint.py       log-STFT → adaptive-threshold local-max → hashes   │
-│   matcher.py           HashIndex (inverted index + coherence scoring)     │
-└────────────────────────────────────────┬──────────────────────────────────┘
-                                         │
-┌────────────────────────────────────────▼──────────────────────────────────┐
-│ scripts/   generate_fingerprints.py · evaluate.py                         │
-│ data/      audio_samples/*.wav · fingerprints_db/fingerprints.json        │
-│            telecom_sectors.json (placeholder until NMS integration)       │
-└───────────────────────────────────────────────────────────────────────────┘
-```
+## Modules
 
-**Data flow (live match)**
-1. Browser captures 2 s mic audio.
-2. `NexusFingerprint.compute()` produces ~2k constellation hashes locally.
-3. POST `/api/match` with the hash array.
-4. Backend looks up each hash in the inverted index (O(Q)) and picks the
-   track with the largest coherent time-offset cluster (Shazam scoring).
-5. Match result + confidence returned synchronously, AND broadcast on the
-   SSE channel — the dashboard updates without polling.
+| Path | What it does |
+|---|---|
+| [`backend/`](backend) | FastAPI service — `/api/match`, `/api/tracks`, `/api/metrics`, `/api/telecom`, SSE event stream |
+| [`core/`](core) | Pure-Python DSP — STFT → constellation hashes → coherence-scored matcher |
+| [`frontend/`](frontend) | Next.js app (landing · demo · live dashboard) |
+| [`mobile/`](mobile) | Companion mobile app |
+| [`scripts/`](scripts) | CLI tools — build the fingerprint DB, evaluation, synthetic tests |
+| [`data/`](data) | Reference audio, fingerprint DB, telecom sector config |
+| [`pi_vehicle_detection/`](pi_vehicle_detection) | Edge live vehicle counter (Raspberry Pi + MobileNet-SSD, ~3–10 FPS) |
+| [`vehicle_profiling/`](vehicle_profiling) | Offline pipeline: YOLOv11 + ByteTrack + Gemini for car make/model/segment/price annotation |
+| [`docs/`](docs) | Architecture diagrams |
 
-## Running
+## Quick start
 
 ```bash
-# 1. Install
 pip install -r backend/requirements.txt
-
-# 2. Build the fingerprint DB (one-off, or whenever audio_samples/ changes)
-python scripts/generate_fingerprints.py
-
-# 3. Start the server (serves API + frontend on http://localhost:8000)
+python scripts/generate_fingerprints.py        # build the DB once
 uvicorn backend.app.main:app --reload --port 8000
 ```
 
-Open:
-- http://localhost:8000/              — landing page
-- http://localhost:8000/demo.html     — vision + audio fingerprint demo
-- http://localhost:8000/dashboard.html — live dashboard
-- http://localhost:8000/docs          — auto-generated OpenAPI docs
+Then open:
 
-## Adding a track at runtime
+- <http://localhost:8000/> — landing page
+- <http://localhost:8000/demo.html> — vision + audio demo
+- <http://localhost:8000/dashboard.html> — live dashboard
+- <http://localhost:8000/docs> — auto-generated OpenAPI
+
+## Audio fingerprinting
+
+The browser captures 2 s of mic audio and computes ~2 k constellation
+hashes locally (`NexusFingerprint.compute()`), POSTs them to
+`/api/match`. The backend picks the track with the largest coherent
+time-offset cluster (Shazam-style scoring), publishes the result on the
+SSE channel, and returns a synchronous match + confidence.
+
+**Latest evaluation:** 88 % top-1 · 100 % recall · 4.6 × coherence gap
+between real matches and noise probes.
 
 ```bash
+# Add a track at runtime — same DSP as the offline build path
 curl -F "file=@my_ad.wav" -F "name=My Ad" -F "brand=Acme" \
      http://localhost:8000/api/tracks
-```
 
-This streams the WAV through the same DSP path used at build time, so
-on-disk fingerprints from `scripts/generate_fingerprints.py` and
-runtime-ingested fingerprints are bit-for-bit equivalent.
-
-## Evaluation
-
-```bash
+# Run the full evaluation suite
 python scripts/evaluate.py
 ```
 
-Tests every reference track with clean / 2s / low-noise / heavy-noise /
-high-noise (SNR ~8 dB) variants and synthetic-noise / sine-wave probes.
-Reports top-1 accuracy, precision, recall, and the coherence gap between
-real matches and false-positive probes.
+## Telecom macro density
 
-Latest run: **88% top-1 / 100% recall**, real-vs-noise coherence gap
-**4.6×**, FP probes safely below the threshold of 8.
+Computes audience density from cellular sector telemetry (capacity %,
+C/I dB, calibration), maps billboards to weighted sector blends, and
+publishes the resulting density values via REST + SSE.
 
-## Telecom Macro Feature
-
-The macro feature computes audience density from cellular network infrastructure signals. It maps physical billboards to mobile sectors and calculates deterministic impression density using real-time telemetry.
-
-**Key Inputs**:
-- Capacity utilization (%) of each mobile macro sector
-- Carrier-to-Interference (C/I) ratio (dB) measuring signal quality
-- Calibration factors from edge-node field measurements
-- Billboard-to-sector geographic mappings
-
-**Density Formula**:
 ```
-D = (w_cap × norm_capacity + w_ci × inverse_ci) × calibration
-  = (0.65 × cap_norm + 0.35 × (1 - ci_norm)) × calibration
+D = (0.65 · cap_norm + 0.35 · (1 − ci_norm)) · calibration
 ```
-Result clamped to [0, 100].
 
-### Macro Endpoints
-
-#### Ingest live sector telemetry
 ```bash
+# Ingest live telemetry
 curl -X POST http://localhost:8000/api/telecom/ingest \
   -H "Content-Type: application/json" \
-  -d '{
-    "timestamp": 1714550400,
-    "sectors": [
-      {
-        "sector_id": "tunis_centre_a",
-        "name": "Tunis Centre (Sector A)",
-        "capacity_used_pct": 87.5,
-        "ci_db": 12.4,
-        "calibration": 1.05
-      }
-    ]
-  }'
-```
+  -d '{"timestamp":1714550400,"sectors":[
+        {"sector_id":"tunis_a","name":"Tunis A",
+         "capacity_used_pct":87.5,"ci_db":12.4,"calibration":1.05}
+      ]}'
 
-#### Query sector densities
-```bash
+# Query densities
 curl http://localhost:8000/api/telecom/macro | jq .
 ```
 
-#### Map billboards to sectors
-```bash
-curl -X POST http://localhost:8000/api/telecom/mappings \
-  -H "Content-Type: application/json" \
-  -d '{
-    "mappings": [
-      {"billboard_id": "bb_01", "sector_id": "tunis_centre_a", "weight": 0.8},
-      {"billboard_id": "bb_01", "sector_id": "tunis_centre_b", "weight": 0.2}
-    ]
-  }'
-```
+Status lifecycle: `static_config` → `live` (first ingest) → `stale`
+(no update for `TELECOM_STALE_TTL_SEC` = 45 s). Tunables live in
+[`backend/app/config.py`](backend/app/config.py).
 
-#### Query billboard density
-```bash
-curl http://localhost:8000/api/telecom/billboards/bb_01
-```
+## Vision pipelines
 
-### Configuration
+### Edge — live vehicle counter
 
-Tunable parameters in `backend/app/config.py`:
+[`pi_vehicle_detection/`](pi_vehicle_detection) runs a MobileNet-SSD on
+a Raspberry Pi camera feed at ~3–10 FPS. Setup, model download, and
+controls are documented in
+[`pi_vehicle_detection/README.md`](pi_vehicle_detection/README.md).
 
-| Parameter | Default | Purpose |
-|-----------|---------|---------|
-| `TELECOM_STALE_TTL_SEC` | 45 | Time before status → stale |
-| `TELECOM_WEIGHT_CAPACITY` | 0.65 | Formula weight |
-| `TELECOM_WEIGHT_CI` | 0.35 | Formula weight |
-| `TELECOM_GLOBAL_CALIBRATION` | 1.0 | Global multiplier |
-| `TELECOM_INGEST_TOKEN` | None | Optional auth token |
+### Offline — make/model/segment profiling
 
-### Status Lifecycle
-
-- **static_config** — App startup, seeded from static JSON
-- **live** — First ingest received
-- **stale** — No updates for > TTL (45s)
-
-### Testing
+[`vehicle_profiling/`](vehicle_profiling) detects and tracks every
+unique vehicle with **YOLOv11x + ByteTrack**, picks the best crop per
+track ID, and asks **Gemini Flash Lite** to identify *make · model ·
+body-type · era · segment · ballpark USD price*. Output: an annotated
+mp4 with boxes coloured by market segment (luxury / premium / midrange
+/ economy) and a running fleet-value HUD.
 
 ```bash
-python scripts/test_macro_synthetic.py
+GEMINI_API_KEY=…  python vehicle_profiling/profile_cars.py \
+    --input  vehicle_profiling/assets/cars.mp4 \
+    --output vehicle_profiling/assets/cars_profiled.mp4 \
+    --device cpu
 ```
 
-Expected: 43/43 tests pass (formula validation, mapping, status transitions).
+Multiple comma-separated keys in `GEMINI_API_KEY` are rotated
+automatically on rate-limit. Sample outputs and trims live in
+[`vehicle_profiling/assets/`](vehicle_profiling/assets/).
 
-## What changed in this transformation
+## Architecture
 
-### Removed (was fake)
-| Was                                              | Now                                               |
-|--------------------------------------------------|---------------------------------------------------|
-| `assets/fingerprints.js` 363 KB blob loaded as a "DB" | DB lives in `data/fingerprints_db/`, served via API |
-| `setInterval` random-walk on dashboard counters  | `/api/metrics` snapshot + SSE deltas              |
-| Cycling list of canned events                    | SSE stream emits real match + impression events   |
-| Sparkline jittered with `Math.random()`          | Sparkline tracks live `audio_matches` rate        |
-| Telecom random-walk in two places                | One `/api/telecom/sectors` endpoint, static config|
-| Demo `state.unified` derived metrics             | Single `/api/metrics` source of truth             |
-| DSP duplicated inline in `demo-app.js`           | `frontend/js/services/audio-fingerprint.js`       |
-| Algorithm constants in three files               | One `core/config.py`, mirrored once in JS         |
-
-### Kept (was real)
-- COCO-SSD vision (TF.js in browser)
-- The Shazam-style fingerprint algorithm itself (now correctly factored)
-
-### Honestly placeholdered
-- `data/telecom_sectors.json` — replace `load_sectors()` in
-  `backend/app/api/telecom.py` with a real NMS feed.
-- Dashboard donut (audience demographics) — no real source yet, kept as
-  a clearly static visual; remove or wire to a profile API.
-
-## Scaling beyond the current in-memory matcher
-
-`core.matcher.HashIndex` is a `dict[hash → list[(track_id, time)]]`.
-For >1M hashes:
-
-- Drop in Redis (one HSET per hash) or a Postgres btree on `hash`.
-- Shard by `hash[:2]`, run multiple matcher pods behind nginx.
-- The `db.store.FingerprintStore` is the only file that needs to change
-  — the API and DSP layers don't care about backing storage.
-
-For very high QPS:
-- Move the SSE broker to Redis pub/sub.
-- Cache `tracks()` metadata behind an LRU.
-- Run uvicorn workers > 1 (the index is read-heavy and process-local;
-  for write-after-load, switch to a shared store first).
-
-## File map
+Full diagram: [`docs/Nexus_Architecture.pdf`](docs/Nexus_Architecture.pdf).
 
 ```
-core/                        signal processing (no I/O dependencies)
-backend/app/                 FastAPI service
-  api/                       request handlers
-  db/                        storage adapter
-  services/                  events, metrics, ingestion
-frontend/                    static site (HTML, CSS, JS)
-  js/services/               api.js, audio-fingerprint.js
-scripts/                     CLI tools (build DB, benchmark)
-data/                        audio + DB + config
+┌──────────── frontend/ ─────────────┐
+│  index.html · demo.html · dashboard│
+└─────────────────┬──────────────────┘
+                  │ /api/match · /api/tracks · /api/metrics
+                  │ /api/telecom · /api/events (SSE)
+┌─────────────────▼──────────────────┐
+│ backend/app/   FastAPI + CORS + SSE│
+│   api/   db/store   services/      │
+└─────────────────┬──────────────────┘
+                  │
+┌─────────────────▼──────────────────┐
+│ core/    STFT → hashes → matcher   │
+└─────────────────┬──────────────────┘
+                  │
+┌─────────────────▼──────────────────┐
+│ scripts/  data/   CLI + fixtures   │
+└────────────────────────────────────┘
 ```
+
+## Scaling notes
+
+`core.matcher.HashIndex` is `dict[hash → list[(track_id, time)]]`. For
+&gt; 1 M hashes, swap the in-memory dict for Redis (one `HSET` per
+hash) or Postgres with a btree on `hash` — `db.store.FingerprintStore`
+is the only adapter the API and DSP layers see, so the change is local.
+At high QPS, move the SSE broker to Redis pub/sub and run uvicorn with
+`--workers > 1`.
